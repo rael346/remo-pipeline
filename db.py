@@ -16,4 +16,6 @@ class Database:
 
     def query(self, query):
         self.cur.execute(query)
+        rows = self.cur.fetchall()
         self.conn.commit()
+        return rows
