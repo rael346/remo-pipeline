@@ -35,6 +35,7 @@ def parse_marc(content: bytes) -> list[MarcEntry]:
     entries: list[MarcEntry] = []
     for record in reader:
         if record is None:
+            # TODO: what to do with these exceptions
             # print(
             #     "Current chunk:",
             #     reader.current_chunk,
