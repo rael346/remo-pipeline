@@ -35,13 +35,21 @@
             data-model="files"
             type="file"
             multiple
+            data-bind-disabled="$$isFetching('#ind')"
           />
         </label>
         <button
           class="btn"
-          data-on-click="$$post('/upload')"
           data-show="$files?.length > 0"
+          data-on-click="$$post('/upload')"
+          data-fetch-indicator="'#ind'"
+          data-bind-disabled="$$isFetching('#ind')"
         >
+          <span 
+            id="ind" 
+            class="loading loading-spinner" 
+            data-show="$$isFetching('#ind')"
+          /></span>
           Submit
         </button>
       </div>
