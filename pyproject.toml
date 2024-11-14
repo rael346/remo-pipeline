@@ -6,5 +6,6 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.115.4",
+    "humanize>=4.11.0",
     "pymarc>=5.2.2",
 ]
