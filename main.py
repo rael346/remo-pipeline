@@ -18,7 +18,6 @@ app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 db = Database()
 
-
 @app.get("/", response_class=HTMLResponse)
 def read_root(request: Request) -> HTMLResponse:
     return templates.TemplateResponse(request=request, name="home.html")
