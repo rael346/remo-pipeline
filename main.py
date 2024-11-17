@@ -19,7 +19,7 @@ templates = Jinja2Templates(directory="templates")
 db = Database()
 
 @app.get("/", response_class=HTMLResponse)
-def read_root(request: Request) -> HTMLResponse:
+def read_root(request: Request):
     return templates.TemplateResponse(request=request, name="home.html")
 
 external_data = {
@@ -84,3 +84,4 @@ async def upload_files(request: Request):
     temp: Template = templates.get_template("upload_result.html")
     frag = temp.render(results=results)
     return stream_template(frag)
+
