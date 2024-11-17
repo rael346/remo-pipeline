@@ -9,6 +9,8 @@ This project use the following technologies:
 - [uv](https://docs.astral.sh/uv/) - a drop-in replacement for `pip` (very similar to `npm`)
 - [fastapi](https://fastapi.tiangolo.com/) - backend framework 
 - [pymarc](https://gitlab.com/pymarc/pymarc) - parsing marc records
+- [tailwindcss](https://tailwindcss.com/) + [daisyui](https://daisyui.com/) - CSS utility libaries 
+- [Datastar](https://data-star.dev/) - Hypermedia framework for UI interactivity
 
 ## Development 
 1. Create a virtual environment for the project (basically an `npm install`)
