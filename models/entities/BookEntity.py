@@ -2,6 +2,7 @@ from peewee import Model, AutoField, CharField, TextField, DateField, BooleanFie
 
 from main import db
 
+
 class BookEntity(Model):
     book_id = AutoField(primary_key=True)  # Auto-incrementing primary key
     isbn = CharField(max_length=13, unique=True, null=False)  # CHAR(13) NOT NULL
@@ -27,4 +28,4 @@ class BookEntity(Model):
 
     class Meta:
         database = db
-        table_name = 'BOOK'
+        table_name = "BOOK"

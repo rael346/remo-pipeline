@@ -1,9 +1,19 @@
-import sqlite3
-from peewee import SqliteDatabase
 import os
 
+from peewee import SqliteDatabase
+
 # Initialize Peewee database
-db = SqliteDatabase('remo.db')
+db = SqliteDatabase(
+    "remo.db",
+    pragmas={
+        "journal_mode": "wal",
+        "cache_size": -1 * 64000,  # 64MB
+        "foreign_keys": 1,
+        "ignore_check_constraints": 0,
+        "synchronous": 0,
+    },
+)
+
 
 class Database:
     def __init__(self):
@@ -13,9 +23,9 @@ class Database:
     def _init_db(self):
         # Connect to the database
         self.db.connect()
-        files = os.listdir('sql')
+        files = os.listdir("sql")
         for file in files:
-            with open(f'sql/{file}', 'r') as f:
+            with open(f"sql/{file}", "r") as f:
                 query = f.read()
                 # Use Peewee's execution method
                 self.db.execute_sql(query)

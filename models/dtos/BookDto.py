@@ -3,6 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
+
 class BookDto(BaseModel):
     isbn: str = Field(..., min_length=13, max_length=13)
     title: str

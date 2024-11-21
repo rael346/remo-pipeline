@@ -1,6 +1,7 @@
 from models.dtos.BookDto import BookDto
 from models.entities.BookEntity import BookEntity
 
+
 class BookMapper:
     @staticmethod
     def dto_to_entity(dto: BookDto) -> BookEntity:
