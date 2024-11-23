@@ -8,10 +8,11 @@ from fastapi.templating import Jinja2Templates
 from humanize import naturalsize
 from jinja2 import Template
 
-from .database.db import SessionDep, create_db_and_tables
-from .database.incomplete import Incomplete
-from .datastar import stream_template
-from .parse import MarcFile, parse_marc
+from app.database.db import SessionDep, create_db_and_tables
+from app.database.incomplete import Incomplete
+from app.datastar import stream_template
+from app.parse import MarcFile, parse_marc
+from app.database import incomplete
 
 
 @asynccontextmanager
@@ -29,28 +30,8 @@ def read_root(request: Request):
     return templates.TemplateResponse(request=request, name="home.html")
 
 
-@app.get("/book")
-async def create_book(session: SessionDep):
-    incomplete_book = Incomplete(
-        title="Example Book Title",
-        creators="Author Name",
-        copyright_date=date(2021, 1, 1).strftime("%d/%m/%Y, %H:%M:%S"),
-        summary="This is an example summary for the book.",
-        genre="Fiction",
-        form="Paperback",
-        format="Standard",
-        pages="350",
-        book_type="Novel",
-        isbn="9783161484100",
-    )
-    session.add(incomplete_book)
-    session.commit()
-    session.refresh(incomplete_book)
-    return incomplete_book
-
-
 @app.post("/upload")
-async def upload_files(request: Request):
+async def upload_files(request: Request, session: SessionDep):
     body = await request.json()
     files = body["files"]
     filesMimes = body["filesMimes"]
@@ -59,13 +40,13 @@ async def upload_files(request: Request):
 
     for file, mime, name in zip(files, filesMimes, filesNames):
         decoded_bytes = b64decode(file)
-        # with open(f"files/{name}", "wb") as f:
-        #     f.write(decoded_bytes)
+        entries = parse_marc(decoded_bytes)
         file_result[name] = {
             "mime": mime,
             "size": naturalsize(len(decoded_bytes)),
-            "entries": parse_marc(decoded_bytes),
+            "entries": entries,
         }
+        incomplete.insert_incompletes(session, entries)
 
     results = list(
         map(

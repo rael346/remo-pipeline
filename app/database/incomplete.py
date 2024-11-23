@@ -7,6 +7,7 @@ class Incomplete(SQLModel, table=True):
     creators: str | None = Field(default=None)
     copyright_date: str | None = Field(default=None)
     summary: str | None = Field(default=None)
+    series: str | None = Field(default=None)
     genre: str | None = Field(default=None)
     form: str | None = Field(default=None)
     format: str | None = Field(default=None)
@@ -15,14 +16,15 @@ class Incomplete(SQLModel, table=True):
     isbn: str | None = Field(default=None)
 
 
-def create_incomplete(*, session: Session, entry: Incomplete):
+def insert_incomplete(session: Session, entry: Incomplete):
     session.add(entry)
     session.commit()
     session.refresh(entry)
 
 
-def create_many_incompletes(*, session: Session, entries: list[Incomplete]):
+def insert_incompletes(session: Session, entries: list[Incomplete]):
     for entry in entries:
         session.add(entry)
     session.commit()
-    session.refresh(entries)
+    for entry in entries:
+        session.refresh(entry)
