@@ -30,13 +30,6 @@ def read_root(request: Request):
     )
 
 
-@app.get("/more_files")
-def more_files(request: Request):
-    temp: Template = templates.get_template("upload_result.html")
-    frag = temp.render(is_more_files=True)
-    return stream_template(frag)
-
-
 @app.post("/upload")
 async def upload_files(request: Request, session: SessionDep):
     body = await request.json()
