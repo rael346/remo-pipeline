@@ -1,58 +1,42 @@
-<html data-theme="light">
-  <head>
-    <title>Home</title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css"
-      rel="stylesheet"
-      type="text/css"
-    />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script
-      type="module"
-      src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar@0.19.9/dist/datastar.min.js"
-      defer
-    ></script>
-  </head>
-
-  <body>
-    <div class="flex items-center justify-center h-screen">
-      <div id="file_upload" class="flex flex-col gap-2">
-        <label
-          class="form-control w-full max-w-xs"
-          data-store="{
-            'files': [],
-            'filesMimes': [],
-            'filesNames': []
-          }"
-        >
-          <div class="label">
-            <span class="label-text">Upload</span>
-          </div>
-          <input
-            class="file-input file-input-bordered w-full max-w-xs"
-            data-model="files"
-            type="file"
-            multiple
-            data-bind-disabled="$$isFetching('#ind')"
-          />
-        </label>
-        <button
-          class="btn"
-          data-show="$files?.length > 0"
-          data-on-click="$$post('/upload')"
-          data-fetch-indicator="'#ind'"
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block body %}
+  <div class="flex items-center justify-center h-screen">
+    <div id="file_upload" class="flex flex-col gap-2">
+      <label
+        class="form-control w-full max-w-xs"
+        data-store="{
+          'is_more_files': false,
+          'files': [],
+          'filesMimes': [],
+          'filesNames': []
+        }"
+      >
+        <div class="label">
+          <span class="label-text">Upload</span>
+        </div>
+        <input
+          class="file-input file-input-bordered w-full max-w-xs"
+          data-model="files"
+          type="file"
+          multiple
           data-bind-disabled="$$isFetching('#ind')"
-        >
-          <span 
-            id="ind" 
-            class="loading loading-spinner" 
-            data-show="$$isFetching('#ind')"
-          /></span>
-          Submit
-        </button>
-      </div>
+        />
+      </label>
+      <button
+        class="btn"
+        data-show="$files?.length > 0"
+        data-on-click="$$post('/upload')"
+        data-fetch-indicator="'#ind'"
+        data-bind-disabled="$$isFetching('#ind')"
+      >
+        <span 
+          id="ind" 
+          class="loading loading-spinner" 
+          data-show="$$isFetching('#ind')"
+        /></span>
+        Submit
+      </button>
     </div>
-  </body>
-</html>
+  </div>
+{% endblock %}

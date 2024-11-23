@@ -25,7 +25,16 @@ templates = Jinja2Templates(directory="./app/templates")
 
 @app.get("/", response_class=HTMLResponse)
 def read_root(request: Request):
-    return templates.TemplateResponse(request=request, name="home.html")
+    return templates.TemplateResponse(
+        request=request, name="home.html", context={"is_more_files": False}
+    )
+
+
+@app.get("/more_files")
+def more_files(request: Request):
+    temp: Template = templates.get_template("upload_result.html")
+    frag = temp.render(is_more_files=True)
+    return stream_template(frag)
 
 
 @app.post("/upload")
