@@ -1,6 +1,5 @@
 from base64 import b64decode
 from contextlib import asynccontextmanager
-from datetime import date
 
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
@@ -9,7 +8,6 @@ from humanize import naturalsize
 from jinja2 import Template
 
 from app.database.db import SessionDep, create_db_and_tables
-from app.database.incomplete import Incomplete
 from app.datastar import stream_template
 from app.parse import MarcFile, parse_marc
 from app.database import incomplete
