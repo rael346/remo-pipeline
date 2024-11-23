@@ -355,12 +355,6 @@ wheels = [
 ]
 
 [[package]]
-name = "peewee"
-version = "3.17.8"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/b4/dc/832bcf4ea5ee2ebc4ea42ef36e44a451de5d80f8b9858bf2066e30738c67/peewee-3.17.8.tar.gz", hash = "sha256:ce1d05db3438830b989a1b9d0d0aa4e7f6134d5f6fd57686eeaa26a3e6485a8c", size = 948249 }
-
-[[package]]
 name = "pydantic"
 version = "2.9.2"
 source = { registry = "https://pypi.org/simple" }
@@ -479,7 +473,6 @@ dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "humanize" },
     { name = "lxml" },
-    { name = "peewee" },
     { name = "pymarc" },
     { name = "sqlmodel" },
     { name = "types-lxml" },
@@ -490,7 +483,6 @@ requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.115.4" },
     { name = "humanize", specifier = ">=4.11.0" },
     { name = "lxml", specifier = ">=5.3.0" },
-    { name = "peewee", specifier = ">=3.17.8" },
     { name = "pymarc", specifier = ">=5.2.2" },
     { name = "sqlmodel", specifier = ">=0.0.22" },
     { name = "types-lxml", specifier = ">=2024.11.8" },

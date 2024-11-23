@@ -53,6 +53,7 @@ def get_local_tag(tag) -> str:
 
 
 def parse_xml(content: bytes):
+    # TODO: Finish ONIX parsing
     root = etree.fromstring(content)
     for product in root.findall("{*}Product"):
         isbn_10_row = product.find(
@@ -66,16 +67,3 @@ def parse_xml(content: bytes):
         )
         isbn_13 = isbn_13_row.text if isbn_13_row is not None else None
         print("ISBN 13: ", isbn_13)
-        # descriptive_details = product.findall("{*}DescriptiveDetail")
-        # collateral_details = product.findall("{*}CollateralDetail")
-        # related_materials = product.findall("{*}RelatedMaterial")
-        # product_supply = product.findall("{*}ProductSupply")
-
-
-# with open("./Datasets/ONIX/LEEANDLOW_20210707.xml", "rb") as f:
-#     parse_xml(f.read())
-
-# with open("./Datasets/MARC/AuburnMiddleSchool.mrc", "rb") as src, open(
-#     "./test.txt", "w"
-# ) as dst:
-#     dst.write(dumps(parse_marc(src.read())[:20], indent=2))
