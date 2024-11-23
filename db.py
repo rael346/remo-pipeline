@@ -39,4 +39,4 @@ class Database:
 
 
 # Initialize Database
-old_db_instance = Database()
+# old_db_instance = Database()

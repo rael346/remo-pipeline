@@ -1,6 +1,6 @@
 from peewee import Model, AutoField, CharField, TextField, DateField, BooleanField
 
-from main import db
+import db
 
 
 class BookEntity(Model):
