@@ -1,0 +1,27 @@
+<div id="file_upload" class="flex flex-col justify-center items-center gap-8">
+  <div class="overflow-x-auto">
+    <table class="table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Name</th>
+          <th>Mime</th>
+          <th>Size</th>
+          <th>Entries</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for name, mime, size, entries in results %}
+        <tr class="hover">
+          <th>{{loop.index}}</th>
+          <td>{{name}}</td>
+          <td>{{mime}}</td>
+          <td>{{size}}</td>
+          <td>{{entries}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <a class="btn" href="/">More Files?</a>
+</div>

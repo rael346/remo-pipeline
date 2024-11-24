@@ -9,8 +9,13 @@ wheels/
 # Virtual environments
 .venv/
 
+# Misc
 .git/
 .DS_Store
 Datasets/
 .idea
-remo
+
+# SQLite DB
+database.db
+database.db-shm
+database.db-wal

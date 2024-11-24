@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block body %}
+  <div class="flex items-center justify-center h-screen">
+    <div id="file_upload" class="flex flex-col gap-2">
+      <label
+        class="form-control w-full max-w-xs"
+        data-store="{
+          'is_more_files': false,
+          'files': [],
+          'filesMimes': [],
+          'filesNames': []
+        }"
+      >
+        <div class="label">
+          <span class="label-text">Upload</span>
+        </div>
+        <input
+          class="file-input file-input-bordered w-full max-w-xs"
+          data-model="files"
+          type="file"
+          multiple
+          data-bind-disabled="$$isFetching('#ind')"
+        />
+      </label>
+      <button
+        class="btn"
+        data-show="$files?.length > 0"
+        data-on-click="$$post('/upload')"
+        data-fetch-indicator="'#ind'"
+        data-bind-disabled="$$isFetching('#ind')"
+      >
+        <span 
+          id="ind" 
+          class="loading loading-spinner" 
+          data-show="$$isFetching('#ind')"
+        /></span>
+        Submit
+      </button>
+    </div>
+  </div>
+{% endblock %}
