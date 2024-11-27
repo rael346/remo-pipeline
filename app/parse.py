@@ -1,10 +1,13 @@
+import io
+
 from pymarc import Field, MARCReader
 from typing import TypedDict
 from lxml import etree
+from pandas import pandas, DataFrame
 from app.database.incomplete import Incomplete
 
 
-class MarcFile(TypedDict):
+class IncompleteFile(TypedDict):
     mime: str
     size: str
     entries: list[Incomplete]
@@ -47,6 +50,12 @@ def parse_marc(content: bytes) -> list[Incomplete]:
 
     return entries
 
+def parse_excel(content: bytes) -> list[Incomplete]:
+    # file-like object from the decoded bytes
+    file_like = io.BytesIO(content)
+    sheet = pandas.read_excel(file_like)
+    print(sheet)
+    return []
 
 def get_local_tag(tag) -> str:
     return etree.QName(tag).localname

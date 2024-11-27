@@ -1,3 +1,4 @@
+import io
 from base64 import b64decode
 from contextlib import asynccontextmanager
 
@@ -7,10 +8,10 @@ from fastapi.templating import Jinja2Templates
 from humanize import naturalsize
 from jinja2 import Template
 
+from app.database import incomplete
 from app.database.db import SessionDep, create_db_and_tables
 from app.datastar import stream_template
-from app.parse import MarcFile, parse_marc
-from app.database import incomplete
+from app.parse import IncompleteFile, parse_marc, parse_xml, parse_excel
 
 
 @asynccontextmanager
@@ -36,17 +37,38 @@ async def upload_files(request: Request, session: SessionDep):
     files = body["files"]
     filesMimes = body["filesMimes"]
     filesNames = body["filesNames"]
-    file_result: dict[str, MarcFile] = {}
+    file_result: dict[str, IncompleteFile] = {}
 
     for file, mime, name in zip(files, filesMimes, filesNames):
-        decoded_bytes = b64decode(file)
-        entries = parse_marc(decoded_bytes)
-        file_result[name] = {
-            "mime": mime,
-            "size": naturalsize(len(decoded_bytes)),
-            "entries": entries,
-        }
-        incomplete.insert_incompletes(session, entries)
+        print(name)
+        decoded_bytes: bytes = b64decode(file)
+        if mime == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+            entries = parse_excel(decoded_bytes)
+
+            file_result[name] = {
+                "mime": mime,
+                "size": naturalsize(len(decoded_bytes)),
+                "entries": entries,
+            }
+            incomplete.insert_incompletes(session, entries)
+        elif mime == "marc_file":
+            entries = parse_marc(decoded_bytes)
+
+            file_result[name] = {
+                "mime": mime,
+                "size": naturalsize(len(decoded_bytes)),
+                "entries": entries,
+            }
+            incomplete.insert_incompletes(session, entries)
+        elif mime == "onyx":
+            entries = parse_xml(decoded_bytes)
+
+            file_result[name] = {
+                "mime": mime,
+                "size": naturalsize(len(decoded_bytes)),
+                "entries": entries,
+            }
+            incomplete.insert_incompletes(session, entries)
 
     results = list(
         map(
