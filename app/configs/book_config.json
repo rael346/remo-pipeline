@@ -1,0 +1,6 @@
+{
+    "grain_path": "my_xpath",
+    "columns": [
+        {"column_a": "my_column_xpath"}
+    ]
+}
