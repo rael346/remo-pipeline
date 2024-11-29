@@ -58,20 +58,38 @@ def parse_excel(content: bytes) -> list[Incomplete]:
     sheet = pandas.read_excel(file_like)
     # Replace bogus values with empty strings
     sheet.fillna("", inplace=True)
+    # Normalize column names once
+    sheet.rename(columns=lambda x: x.strip().replace(" ", "_").replace("/", "_"), inplace=True)
+    # Detect problematic column names
+    title_column = next((col for col in sheet.columns if col.startswith("Title")), None)
+    reading_level_column = next(
+        (col for col in sheet.columns if col in ["Lexile", "Reading_Level"]), None
+    )
 
-    for _, row in sheet.iterrows():
+    for row in sheet.itertuples(index=False):
         entries.append(
             Incomplete(
-                title=row["Title/Subtitle"],
-                creators=row["Author"],
-                publication_date=row["Publication Year"],
-                series=row["Series Title"],
-                genre="",  # TODO: Add genre parser for Excel files
-                form="",  # TODO: Add form parser for Excel files
-                format="",  # TODO: Add format parser for Excel files
-                isbn=row["ISBN"],
-                publisher=row["Publisher"],
-                book_type="",  # TODO: Add book type parser for Excel files
+                id=None,
+                isbn=row.ISBN,
+                title=getattr(row, title_column),
+                creators=row.Author,
+                copyright_date=row.Copyright_date if "Copyright_date" in sheet.columns else "",
+                summary=row.Summary if "Summary" in sheet.columns else "",
+                series=row.Series_Title if "Series_title" in sheet.columns else "",
+                genre=row.Genre if "Genre" in sheet.columns else "",
+                form=row.Form if "Form" in sheet.columns else "",
+                format=row.Format if "Format" in sheet.columns else "",
+                pages=row.Pages if "Pages" in sheet.columns else "",
+                book_type=row.Book_Type if "Book_Type" in sheet.columns else "",
+                publisher=row.Publisher,
+                publication_date=row.Publication_Year if "Publication_Year" in sheet.columns else "",
+                awards=row.Awards if "Awards" in sheet.columns else "",
+                reading_level=getattr(row, reading_level_column),
+                topics=row.Topics if "Topics" in sheet.columns else "",
+                subjects=row.Subjects if "Subjects" in sheet.columns else "",
+                target_audience=row.Target_Audience if "Target_Audience" in sheet.columns else "",
+                banned_book=row.Banned_Book if "Banned_Book" in sheet.columns else "",
+                alternate_titles=row.Alternate_Titles if "Alternate_Titles" in sheet.columns else "",
             )
         )
 

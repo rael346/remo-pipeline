@@ -49,7 +49,6 @@ async def upload_files(request: Request, session: SessionDep):
                 "size": naturalsize(len(decoded_bytes)),
                 "entries": entries,
             }
-            print(entries)
             incomplete.insert_incompletes(session, entries)
         elif mime == "marc_file":
             entries = parse_marc(decoded_bytes)
