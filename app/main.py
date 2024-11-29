@@ -40,7 +40,6 @@ async def upload_files(request: Request, session: SessionDep):
     file_result: dict[str, IncompleteFile] = {}
 
     for file, mime, name in zip(files, filesMimes, filesNames):
-        print(name)
         decoded_bytes: bytes = b64decode(file)
         if mime == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
             entries = parse_excel(decoded_bytes)
@@ -50,6 +49,7 @@ async def upload_files(request: Request, session: SessionDep):
                 "size": naturalsize(len(decoded_bytes)),
                 "entries": entries,
             }
+            print(entries)
             incomplete.insert_incompletes(session, entries)
         elif mime == "marc_file":
             entries = parse_marc(decoded_bytes)

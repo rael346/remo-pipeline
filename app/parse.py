@@ -1,4 +1,5 @@
 import io
+from io import BytesIO
 
 from pymarc import Field, MARCReader
 from typing import TypedDict
@@ -51,15 +52,33 @@ def parse_marc(content: bytes) -> list[Incomplete]:
     return entries
 
 def parse_excel(content: bytes) -> list[Incomplete]:
-    # file-like object from the decoded bytes
-    file_like = io.BytesIO(content)
+    entries: list[Incomplete] = []
+    # Create a file-like object from the decoded bytes
+    file_like: BytesIO = io.BytesIO(content)
     sheet = pandas.read_excel(file_like)
-    print(sheet)
-    return []
+    # Replace bogus values with empty strings
+    sheet.fillna("", inplace=True)
+
+    for _, row in sheet.iterrows():
+        entries.append(
+            Incomplete(
+                title=row["Title/Subtitle"],
+                creators=row["Author"],
+                publication_date=row["Publication Year"],
+                series=row["Series Title"],
+                genre="",  # TODO: Add genre parser for Excel files
+                form="",  # TODO: Add form parser for Excel files
+                format="",  # TODO: Add format parser for Excel files
+                isbn=row["ISBN"],
+                publisher=row["Publisher"],
+                book_type="",  # TODO: Add book type parser for Excel files
+            )
+        )
+
+    return entries
 
 def get_local_tag(tag) -> str:
     return etree.QName(tag).localname
-
 
 def parse_xml(content: bytes):
     # TODO: Finish ONIX parsing
