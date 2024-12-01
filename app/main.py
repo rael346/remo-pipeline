@@ -9,6 +9,7 @@ from jinja2 import Template
 
 from app.database import incomplete
 from app.database.db import SessionDep, create_db_and_tables
+from app.database.incomplete import Incomplete
 from app.datastar import stream_template
 from app.parse import IncompleteFile, parse_marc, parse_xml, parse_excel
 
@@ -37,36 +38,23 @@ async def upload_files(request: Request, session: SessionDep):
     filesMimes = body["filesMimes"]
     filesNames = body["filesNames"]
     file_result: dict[str, IncompleteFile] = {}
+    entries: list[Incomplete] = []
 
     for file, mime, name in zip(files, filesMimes, filesNames):
         decoded_bytes: bytes = b64decode(file)
         if mime == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
             entries = parse_excel(decoded_bytes)
-
-            file_result[name] = {
-                "mime": mime,
-                "size": naturalsize(len(decoded_bytes)),
-                "entries": entries,
-            }
-            incomplete.insert_incompletes(session, entries)
-        elif mime == "marc_file":
+        elif mime == "application/marc":
             entries = parse_marc(decoded_bytes)
-
-            file_result[name] = {
-                "mime": mime,
-                "size": naturalsize(len(decoded_bytes)),
-                "entries": entries,
-            }
-            incomplete.insert_incompletes(session, entries)
         elif mime == "onyx":
             entries = parse_xml(decoded_bytes)
 
-            file_result[name] = {
-                "mime": mime,
-                "size": naturalsize(len(decoded_bytes)),
-                "entries": entries,
-            }
-            incomplete.insert_incompletes(session, entries)
+        file_result[name] = {
+            "mime": mime,
+            "size": naturalsize(len(decoded_bytes)),
+            "entries": entries,
+        }
+        incomplete.insert_incompletes(session, entries)
 
     results = list(
         map(
