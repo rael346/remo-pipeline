@@ -1,10 +1,14 @@
+import io
+from io import BytesIO
+
 from pymarc import Field, MARCReader
 from typing import TypedDict
 from lxml import etree
+from pandas import pandas
 from app.database.incomplete import Incomplete
 
 
-class MarcFile(TypedDict):
+class IncompleteFile(TypedDict):
     mime: str
     size: str
     entries: list[Incomplete]
@@ -42,6 +46,67 @@ def parse_marc(content: bytes) -> list[Incomplete]:
                 isbn=record.isbn,
                 pages="\n".join(map_fields(record.physicaldescription)),
                 book_type="",  # TODO: add book type parser for marc files
+            )
+        )
+
+    return entries
+
+
+def parse_excel(content: bytes) -> list[Incomplete]:
+    entries: list[Incomplete] = []
+    # Create a file-like object from the decoded bytes
+    file_like: BytesIO = io.BytesIO(content)
+    sheet = pandas.read_excel(file_like)
+    # Replace bogus values with empty strings
+    sheet.fillna("", inplace=True)
+    # Normalize column names once
+    sheet.rename(
+        columns=lambda x: x.strip().replace(" ", "_").replace("/", "_"), inplace=True
+    )
+    # Detect problematic column names
+    title_column = next((col for col in sheet.columns if col.startswith("Title")), None)
+    reading_level_column = next(
+        (col for col in sheet.columns if col in ["Lexile", "Reading_Level"]), ""
+    )
+
+    for row in sheet.itertuples(index=False):
+        entries.append(
+            Incomplete(
+                id=None,
+                isbn=row.ISBN if "ISBN" in row else "",
+                title=getattr(row, title_column),
+                creators=row.Author,
+                copyright_date=row.Copyright_date
+                if "Copyright_date" in sheet.columns
+                else "",
+                summary=row.Summary if "Summary" in sheet.columns else "",
+                series=row.Series_Title if "Series_title" in sheet.columns else "",
+                genre=row.Genre if "Genre" in sheet.columns else "",
+                form=row.Form if "Form" in sheet.columns else "",
+                format=row.Format if "Format" in sheet.columns else "",
+                pages=row.Pages if "Pages" in sheet.columns else "",
+                book_type=row.Book_Type if "Book_Type" in sheet.columns else "",
+                publisher=row.Publisher if "Publisher" in sheet.columns else "",
+                publication_date=row.Publication_Year
+                if "Publication_Year" in sheet.columns
+                else "",
+                awards=row.Awards if "Awards" in sheet.columns else "",
+                reading_level=getattr(row, reading_level_column, "")
+                if reading_level_column
+                else "",
+                sub_genres=row.Sub_genres if "Sub_genres" in sheet.columns else "",
+                topics=row.Topics if "Topics" in sheet.columns else "",
+                subjects=row.Subjects if "Subjects" in sheet.columns else "",
+                target_audience=row.Target_Audience
+                if "Target_Audience" in sheet.columns
+                else "",
+                banned_book=row.Banned_Book if "Banned_Book" in sheet.columns else "",
+                alternate_titles=row.Alternate_Titles
+                if "Alternate_Titles" in sheet.columns
+                else "",
+                text_features=row.Text_features
+                if "Text_features" in sheet.columns
+                else "",
             )
         )
 

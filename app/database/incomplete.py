@@ -22,6 +22,7 @@ class Incomplete(SQLModel, table=True):
     publication_date: str | None = Field(default=None, nullable=True)
     awards: str | None = Field(default=None, nullable=True)
     reading_level: str | None = Field(default=None, nullable=True)
+    sub_genres: str | None = Field(default=None, nullable=True)
 
     # Nice to have
     topics: str | None = Field(default=None, nullable=True)
@@ -29,6 +30,7 @@ class Incomplete(SQLModel, table=True):
     target_audience: str | None = Field(default=None, nullable=True)
     banned_book: str | None = Field(default=None, nullable=True)
     alternate_titles: str | None = Field(default=None, nullable=True)
+    text_features: str | None = Field(default=None, nullable=True)
 
 
 def insert_incomplete(session: Session, entry: Incomplete):
