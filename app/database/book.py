@@ -6,7 +6,7 @@ class Book(SQLModel, table=True):
     isbn: int = Field(max_digits=13, unique=True, nullable=False)
     title: str = Field(nullable=False)
     creators: str = Field(nullable=False)
-    copyright_date: date = Field(nullable=False)
+    copyright_date: str = Field(nullable=False)
     summary: str = Field(nullable=False)
     series_name_position: str = Field(nullable=True)
     genres: str = Field(nullable=False)
