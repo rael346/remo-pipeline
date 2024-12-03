@@ -142,12 +142,7 @@ def parse_xml(content: bytes) -> list[Incomplete]:
                         value = node[0]
                     else:
                         value = node[0].text
-                    if value == None:
-                        print(f'Book {bookname} has a blank {column_name}')
-                    print(f'column name: {column_name}, path: {path}, value: {value}')
                     entry[column_name] = value
-                elif len(node) == 0:
-                    print(f"Didn't find anything for column {column_name}.")
             creators = ''
             if 'creator1' in entry:
                 creators += entry['creator1']
