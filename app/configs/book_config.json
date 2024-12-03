@@ -3,18 +3,19 @@
     "grain_path": "product",
     "columns": [
         {"name": "publisher", "path": "publishingdetail/publisher/b081"},
-        {"name": "ISBN", "path": "productidentifier[b221='15']/b244"},
+        {"name": "isbn", "path": "productidentifier[b221='15']/b244"},
         {"name": "title", "path": "descriptivedetail/titledetail/titleelement[x409='01']/b203"},
         {"name": "creator1", "path": "descriptivedetail/contributor[b034='1']/b037"},
         {"name": "creator2", "path": "descriptivedetail/contributor[b034='2']/b037"},
         {"name": "creator3", "path": "descriptivedetail/contributor[b034='3']/b037"},
-        {"name": "copyright", "path": "publishingdetail/copyrightstatement/b087"},
+        {"name": "copyright_date", "path": "publishingdetail/copyrightstatement/b087"},
         {"name": "shortdescription", "path": "collateraldetail/textcontent[x426='02']/d104//text()"},
         {"name": "longdescription", "path": "collateraldetail/textcontent[x426='03']/d104//text()"},
         {"name": "series_name_position", "path": "descriptivedetail/collection/collectionsequence/x481"},
         {"name": "genres", "path": "descriptivedetail/subject[b067='20']/b070"},
         {"name": "form", "path": "descriptivedetail/b012"},
         {"name": "format", "path": "descriptivedetail/b333"},
-        {"name": "pages", "path": "descriptivedetail/extent[b218='00']/b219"}
+        {"name": "pages", "path": "descriptivedetail/extent[b218='00']/b219"},
+        {"name": "type", "path": "descriptivedetail/x416"}
     ]
 }
