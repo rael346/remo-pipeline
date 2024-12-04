@@ -46,7 +46,7 @@ async def upload_files(request: Request, session: SessionDep):
             entries = parse_excel(decoded_bytes)
         elif mime == "application/marc":
             entries = parse_marc(decoded_bytes)
-        elif mime == "onyx":
+        elif mime == "text/xml":
             entries = parse_xml(decoded_bytes)
 
         file_result[name] = {

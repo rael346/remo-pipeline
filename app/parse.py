@@ -6,6 +6,7 @@ from typing import TypedDict
 from lxml import etree
 from pandas import pandas
 from app.database.incomplete import Incomplete
+from .configs.configs import Configs
 
 
 class IncompleteFile(TypedDict):
@@ -117,18 +118,45 @@ def get_local_tag(tag) -> str:
     return etree.QName(tag).localname
 
 
-def parse_xml(content: bytes):
-    # TODO: Finish ONIX parsing
-    root = etree.fromstring(content)
-    for product in root.findall("{*}Product"):
-        isbn_10_row = product.find(
-            "{*}ProductIdentifier/[{*}ProductIDType='02']/{*}IDValue"
-        )
-        isbn_10 = isbn_10_row.text if isbn_10_row is not None else None
-        print("ISBN 10: ", isbn_10)
+def parse_xml(content: bytes) -> list[Incomplete]:
+    print("parsing XML...")
+    file_like: BytesIO = io.BytesIO(content)
+    xml = etree.parse(file_like)
+    root = xml.getroot()
+    configs: dict[str, dict] = Configs.get_configs()
+    entries = []
 
-        isbn_13_row = product.find(
-            "{*}ProductIdentifier/[{*}ProductIDType='15']/{*}IDValue"
-        )
-        isbn_13 = isbn_13_row.text if isbn_13_row is not None else None
-        print("ISBN 13: ", isbn_13)
+    for key in configs:
+        config = configs[key]
+        rows = xml.xpath(config["grain_path"])
+        print(f'Objects found: {len(rows)}')
+        #A row is one grain object, e.g. one book tag
+        for row in rows:
+            entry = {}
+            for column in config["columns"]:
+                column_name = column["name"]
+                path = column["path"]
+                node = row.xpath(path)
+                if len(node) > 0:
+                    if 'text()' in path:
+                        value = node[0]
+                    else:
+                        value = node[0].text
+                    entry[column_name] = value
+            creators = ''
+            if 'creator1' in entry:
+                creators += entry['creator1']
+            if 'creator2' in entry:
+                creators += entry['creator2']
+            if 'creator3' in entry:
+                creators += entry['creator3']
+            entry['creators'] = creators
+            
+            summary = ''
+            if 'shortdescription' in entry:
+                summary = entry['shortdescription']
+            elif 'longdescription' in entry:
+                summary = entry['longdescription']
+            entry['summary'] = summary
+            entries.append(Incomplete(**entry))
+    return entries
