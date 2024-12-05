@@ -1,6 +1,7 @@
 # ReMo Pipeline
+> A data pipeline to clean up book data for [ReMo](https://remo.app/)
 
-- A data pipeline to clean up book data for [ReMo](https://remo.app/)
+https://github.com/user-attachments/assets/639518c5-fa4c-460b-91fb-b373a7872065
 
 ## Prerequisite 
 
