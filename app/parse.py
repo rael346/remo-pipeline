@@ -119,7 +119,6 @@ def get_local_tag(tag) -> str:
 
 
 def parse_xml(content: bytes) -> list[Incomplete]:
-    print("parsing XML...")
     file_like: BytesIO = io.BytesIO(content)
     xml = etree.parse(file_like)
     root = xml.getroot()
@@ -129,8 +128,7 @@ def parse_xml(content: bytes) -> list[Incomplete]:
     for key in configs:
         config = configs[key]
         rows = xml.xpath(config["grain_path"])
-        print(f'Objects found: {len(rows)}')
-        #A row is one grain object, e.g. one book tag
+        # A row is one grain object, e.g. one book tag
         for row in rows:
             entry = {}
             for column in config["columns"]:
@@ -138,25 +136,25 @@ def parse_xml(content: bytes) -> list[Incomplete]:
                 path = column["path"]
                 node = row.xpath(path)
                 if len(node) > 0:
-                    if 'text()' in path:
+                    if "text()" in path:
                         value = node[0]
                     else:
                         value = node[0].text
                     entry[column_name] = value
-            creators = ''
-            if 'creator1' in entry:
-                creators += entry['creator1']
-            if 'creator2' in entry:
-                creators += entry['creator2']
-            if 'creator3' in entry:
-                creators += entry['creator3']
-            entry['creators'] = creators
-            
-            summary = ''
-            if 'shortdescription' in entry:
-                summary = entry['shortdescription']
-            elif 'longdescription' in entry:
-                summary = entry['longdescription']
-            entry['summary'] = summary
+            creators = ""
+            if "creator1" in entry:
+                creators += entry["creator1"]
+            if "creator2" in entry:
+                creators += entry["creator2"]
+            if "creator3" in entry:
+                creators += entry["creator3"]
+            entry["creators"] = creators
+
+            summary = ""
+            if "shortdescription" in entry:
+                summary = entry["shortdescription"]
+            elif "longdescription" in entry:
+                summary = entry["longdescription"]
+            entry["summary"] = summary
             entries.append(Incomplete(**entry))
     return entries

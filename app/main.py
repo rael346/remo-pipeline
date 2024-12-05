@@ -44,7 +44,7 @@ async def upload_files(request: Request, session: SessionDep):
         decoded_bytes: bytes = b64decode(file)
         if mime == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
             entries = parse_excel(decoded_bytes)
-        elif mime == "application/marc":
+        elif mime == "application/octet-stream":
             entries = parse_marc(decoded_bytes)
         elif mime == "text/xml":
             entries = parse_xml(decoded_bytes)
