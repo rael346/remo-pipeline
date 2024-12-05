@@ -13,6 +13,7 @@ This project use the following technologies:
 
 - [fastapi](https://fastapi.tiangolo.com/) - backend framework 
 - [pymarc](https://gitlab.com/pymarc/pymarc) - parsing marc records
+- [Pandas](https://pandas.pydata.org/pandas-docs/stable/index.html) - parsing excel files
 - [SQLModel](https://sqlmodel.tiangolo.com/) - ORM that integrates well with Pydantic and Fastapi
 - [SQLite](https://www.sqlite.org/) - Database, mainly for ease of use
 
@@ -50,7 +51,12 @@ uvx ruff format
 - The rest of the technologies above are mostly preference (wanting to learn new tech, etc)
 
 ## Learning
-- Parsing multiple files in Python is relatively slow since parsing is a CPU-bounded task, and you can't use multiple threads in Python because of the Global Interpreter Lock (GIL). Future implementation should consider other languages with threading capability like Java or Go if parsing multiple files is a required feature.
+
+- Parsing multiple files in Python is relatively slow since parsing is a CPU-bounded task, and you can't use multiple
+  threads in Python because of the Global Interpreter Lock (GIL). Future implementation should consider other languages
+  with multi-threading capabilities like Java, C#, or Go if parsing multiple files is a required feature.
+- In the past few years Python has come a long way in regard to type annotations. Now their syntax is less noisy and
+  most of the newer libraries support them. Older and more established libraries have spotty support.
 - Since the MARC and Excel records are from 'clients' (schools), the entries are entirely unprocessed and contains a lot of missing fields and corrupted entries. So, for data integrity sake, we decided to put records from those files to an `Incomplete` table, where all of the fields in an entry is either `str` or `None`
     - ONIX records are put into a `Book` table where the data type of each field is enforced (date has to be `date`, isbn has to be `CHAR(13)`, etc). This is mainly because ONIX records are from publishers, so we can consider them as a source of truth.
     - Because of time constraint, in the implementation we didn't put the ONIX records in the `Book` table, but the `Incomplete` table instead. This is mainly because ONIX spec is fairly extensive and can take a while to find the field that you need.
